@@ -12,6 +12,20 @@ except FileNotFoundError as e:
 # Parse code into an AST
 tree = ast.parse(content)
 # Print the AST
-print(ast.dump(tree, indent=4))
+#print(ast.dump(tree, indent=4))
 
 
+class Linter(ast.NodeVisitor):
+    def visit_FunctionDef(self, node):
+        defaults = node.args.defaults
+
+        if len(defaults) == 0:
+            self.generic_visit(node)
+            return
+
+        if any(defaults) == dict or set or list:
+            print(f"FLAGGED: `{node.name}` using mutuable default argument.")
+        
+        self.generic_visit(node)      
+
+Linter().visit(tree)
