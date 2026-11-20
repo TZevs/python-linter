@@ -23,9 +23,21 @@ class Linter(ast.NodeVisitor):
             self.generic_visit(node)
             return
 
-        if any(defaults) == dict or set or list:
-            print(f"FLAGGED: `{node.name}` using mutuable default argument.")
+        if any(isinstance(default, (ast.Dict, ast.Set, ast.List)) for default in defaults):
+            print(f"FLAGGED: Mutable default argument at line {node.lineno}.")
         
-        self.generic_visit(node)      
+        self.generic_visit(node)
 
+    def visit_Compare(self, node):
+        is_comparator = False
+
+        if any(isinstance(op, (ast.Is, ast.IsNot)) for op in node.ops):
+            for comparator in node.comparators:
+                if isinstance(comparator, ast.Constant):
+                    if type(comparator.value) in (str, int, float, complex):
+                        is_comparator = True
+
+        if is_comparator:
+            print(f"FLAGGED: Incorrect identity comparison at line {node.lineno}.")
+                
 Linter().visit(tree)
