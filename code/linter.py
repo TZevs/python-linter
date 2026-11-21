@@ -25,7 +25,7 @@ class Linter(ast.NodeVisitor):
             return
 
         if any(isinstance(default, (ast.Dict, ast.Set, ast.List)) for default in defaults):
-            print(f"FLAGGED: Mutable default argument at line {node.lineno}.")
+            print(f"Line: {node.lineno}. Mutable default argument.")
         
         self.generic_visit(node)
 
@@ -39,12 +39,12 @@ class Linter(ast.NodeVisitor):
                         is_comparator = True
 
         if is_comparator:
-            print(f"FLAGGED: Incorrect identity comparison at line {node.lineno}.")
+            print(f"Line: {node.lineno}. Incorrect identity comparison.")
 
     def visit_Assign(self, node):
         for name in node.targets:
             if name.id in dir(builtins):
-                print(f"FLAGGED: Name on line {node.lineno} matches a builtin name, `{name.id}`.")
+                print(f"Line: {node.lineno}. Variable name matches builtin name, `{name.id}`.")
 
     
 Linter().visit(tree)
