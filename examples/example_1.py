@@ -18,6 +18,7 @@ if x is 5 and y is 6:
     print("x is 5 and y is 6")
 
 list = [1, 2, 3]
+my_list = [4, 5, 6]
 
 def print_hello(name: str) -> str:
     if name is "Natalie":
