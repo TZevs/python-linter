@@ -1,4 +1,5 @@
 # Python Linter
+![license: MIT](https://img.shields.io/badge/license-MIT-success)
 
 ## About
 
