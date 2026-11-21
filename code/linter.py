@@ -1,5 +1,6 @@
 import ast
 import sys
+import builtins
 
 content = ""
 
@@ -39,5 +40,11 @@ class Linter(ast.NodeVisitor):
 
         if is_comparator:
             print(f"FLAGGED: Incorrect identity comparison at line {node.lineno}.")
-                
+
+    def visit_Assign(self, node):
+        for name in node.targets:
+            if name.id in dir(builtins):
+                print(f"FLAGGED: Name on line {node.lineno} matches a builtin name, `{name.id}`.")
+
+    
 Linter().visit(tree)
