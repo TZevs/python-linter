@@ -70,11 +70,11 @@ pytest
 - Implement visit method for `AsyncFunctionDef` to allow the linter to flag mutable default arguments in an `async` function. 
 
 ## References
-[Python Docs: ast - Abstract syntax trees](https://docs.python.org/3/library/ast.html#node-classes)
-[Earthly: Introduction to Abstract Syntax Trees in Python](https://earthly.dev/blog/python-ast/#anatomy-of-an-ast-node)
-[Real Python: Defining Main Function in Python](https://realpython.com/python-main-function/)
-[Real Python: linter](https://realpython.com/ref/glossary/linter/)
-[DeepSource: Learn Python ASTs by building your own linter](https://deepsource.com/blog/python-asts-by-building-your-own-linter)
+[Python Docs: ast - Abstract syntax trees](https://docs.python.org/3/library/ast.html#node-classes)<br>
+[Earthly: Introduction to Abstract Syntax Trees in Python](https://earthly.dev/blog/python-ast/#anatomy-of-an-ast-node)<br>
+[Real Python: Defining Main Function in Python](https://realpython.com/python-main-function/)<br>
+[Real Python: linter](https://realpython.com/ref/glossary/linter/)<br>
+[DeepSource: Learn Python ASTs by building your own linter](https://deepsource.com/blog/python-asts-by-building-your-own-linter)<br>
 [sdxpy: A Code Linter](https://third-bit.com/sdxpy/lint/)
 
 ## License
