@@ -5,6 +5,9 @@ import builtins
 
 class Linter(ast.NodeVisitor):
     def __init__(self):
+        """
+        Initialises a Linter instance, giving it an empty list.
+        """
         self.findings = []
 
     def visit_FunctionDef(self, node):
@@ -36,7 +39,7 @@ class Linter(ast.NodeVisitor):
         """
         for target in node.targets:
             if isinstance(target, ast.Name) and target.id in dir(builtins):
-                self.findings.append((node.lineno, f"GL003 built-in name `{target.id}` overwitten"))
+                self.findings.append((node.lineno, f"GL003 built-in name `{target.id}` overwritten"))
 
         self.generic_visit(node)
 
