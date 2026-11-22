@@ -16,27 +16,29 @@ _Learning plan created by Claude, **the code solution was not**, other than a fe
 | GL003 | Variable assignment that overwrites a built-in name. | `list = [1, 2]` |
 
 ### Design Decisions
-1) Read the code's structure, not its text
+##### 1) A command-line script
+- Run as `python python_linter/linter.py <filepath>`, as a standalone Python script using `ast`.
+- Quick and easy to implement with high maintainability for adding future rules.
+- _Trade-of_: Possible slow execution with larger files. 
+##### 2) Read the code's structure, not its text
 - Parse the file with the `ast` module instead of searching the file's text.
 - A text search cannot tell between `list = []` in the code from `list = []` inside a comment or string.
-- Only works on valid Python.
-2) Visitor Pattern, one method per rule
+- _Trade-of_: Only works on valid Python.
+##### 3) Visitor Pattern, one method per rule
 - `Linter` extends `ast.NodeVisitor`. Each rule has its own method: `visit_FunctionDef` (GL001), `visit_Compare` (GL002), `visit_Assign` (GL003).
 - `visit(node)` starts the walk through the node's children, at each child it checks for a method `visit_` + the node type and calls it, if it exists, if not it carries on walking through the tree.
 - A new rule is a new method, with no change to the others.
 - _Trade-off_: 2 rules that need the same node type have to share one method.
-3) 
+##### 3) Collect findings in a list, don't print them
+- `Linter.__init__` creates an empty list. Each rule adds `(line, message)` to it, or nothing is nothings flagged.
+- Tests can check the list directly. The output format can change without affecting any rules.
+- _Trade-off_: Slightly more code than printing straight away.
+##### 4) Keep logic separate from file reading and findings printing
+- `Linter` stores findings as `(line, message)` in a list. `lint(source)` takes the text of a file, parses it and returns that list. `Main()` checks the command-line arguments, reads the file and prints the findings.
+- Tests can pass a string straight to `lint` and check the result, with no files or printed output. The output format or the way files are read can change without affecting any rules.
+- _Trade-off_: an extra layer for a small script. `lint` does not know the file name, so `Main()` adds it. 
 
-- 
-- Each method ends with `self.generic_visit(node)`. Without it, the visitor(Linter) would not look inside that node.
-- Implemented the Visitor design pattern via the `ast` NodeVisitor class creating custom `visit_` methods, that run when the instance calls `.visit(tree)` calling the methods in order that the node types are found within the passed in node.
-  - The `tree` node is the Module node, all nodes within are its children, if a function is written in the code first, then the `visit_FunctionDef` method is called first. At the end of the method `self.visit_generic(node)` is called to ensure that this function's children nodes are visited via the implemented methods before moving down the module structure.
-  - Each rule has its own `visit_` method which aligns with the Visitor pattern, this independence will allow future rules to be easily appended.
-  - `def __init__(self)` initialises the Linter instance and gives it a empty list, which will store the findings the linter flags.
-- This program will run as a script as the file to be run is passed in via the 2nd command-line argument.
-- A `Main()` function implemented so that the file argument can be verified before calling the `lint(source)` function to parse the file content as a `ast`, create a Linter instance, and have it call the `visit(tree)` method.
-  - This is where the `ast` module comes in, because it cannot find a defined `visit` method it will automatically look for custom methods that are prefixed with `visit_` and use the suffix to match to node types. Such as `FunctionDef` in the first method. 
-
+---
 ### Tech Stack
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 <br>
