@@ -3,6 +3,10 @@
 
 ## About
 A small Python command-line linter that checks for three common Python bugs in a file's syntax structure using the `ast` module.
+<br><br>
+Developed as part of a learning plan I am following to go back to the basics of Python and programming, in order to prepare for interviews and technical assessments. Best to go back to basics before moving onto more complex projects and new fields. 
+<br>
+_Learning plan created by Claude, **the code solution was not**, other than a few corrections and the test cases to identify bugs quicker._ 
 
 ### Rules
 | Code | Finds | Example |
@@ -12,7 +16,19 @@ A small Python command-line linter that checks for three common Python bugs in a
 | GL003 | Variable assignment that overwrites a built-in name. | `list = [1, 2]` |
 
 ### Design Decisions
-- Use of a **Syntax tree** instead of a text search. A text search would not be able to tell the different between `list = []` in code and a `list = []` inside a string or a comment. The `ast` module provides the real structure of the code, including attributes, data types, etc.
+1) Read the code's structure, not its text
+- Parse the file with the `ast` module instead of searching the file's text.
+- A text search cannot tell between `list = []` in the code from `list = []` inside a comment or string.
+- Only works on valid Python.
+2) Visitor Pattern, one method per rule
+- `Linter` extends `ast.NodeVisitor`. Each rule has its own method: `visit_FunctionDef` (GL001), `visit_Compare` (GL002), `visit_Assign` (GL003).
+- `visit(node)` starts the walk through the node's children, at each child it checks for a method `visit_` + the node type and calls it, if it exists, if not it carries on walking through the tree.
+- A new rule is a new method, with no change to the others.
+- _Trade-off_: 2 rules that need the same node type have to share one method.
+3) 
+
+- 
+- Each method ends with `self.generic_visit(node)`. Without it, the visitor(Linter) would not look inside that node.
 - Implemented the Visitor design pattern via the `ast` NodeVisitor class creating custom `visit_` methods, that run when the instance calls `.visit(tree)` calling the methods in order that the node types are found within the passed in node.
   - The `tree` node is the Module node, all nodes within are its children, if a function is written in the code first, then the `visit_FunctionDef` method is called first. At the end of the method `self.visit_generic(node)` is called to ensure that this function's children nodes are visited via the implemented methods before moving down the module structure.
   - Each rule has its own `visit_` method which aligns with the Visitor pattern, this independence will allow future rules to be easily appended.
@@ -39,7 +55,7 @@ pip install -r requirements.txt
 ```
 ### Usage
 ```terminal
-python linter.py <filepath>
+python python_linter/linter.py <filepath>
 ```
 > `<filepath>`: of the file you want the linter to check.
 
@@ -48,24 +64,25 @@ python linter.py <filepath>
 pip install pytest
 pytest
 ```
-> If you have installed the dependencies from the installation command steps then Pytest will have already been installed.
+> If you have installed the dependencies from the installation command steps then Pytest will have already been installed.<br>
+> Can specify which test file to run: `pytest tests/<test_file>`
 
-## Known Issues & Improvements to be Made
+## Testing
+There are 36 tests all together, there are unit tests written for each of the linter rules. 
 ### Bugs
-| BugID | Rule | Test Name | Priority | Resolved |
-|---|---|---|---|---|
-| 001 | GL001 | test_flags_mutable_default_args() | High | - |
-| 002 | GL001 | test_flags_keyword_only_mutable_defaults() | Medium | - |
-| 003 | GL001 | test_flags_async_function_mutable_default() | Low | - |
-| 004 | GL001 | test_does_not_flag_mutable_object_indside_func_body() | Low | ✅ | 
-| 005 | GL002 | test_chained_comparison_does_not_flag_wrong_comparator() | Medium | - |
-| 006 | GL003 | test_flags_annotated_assignment() | Medium | - |
-| 007 | GL003 | test_flags_augmented_assignment() | Medium | - |
-| 008 | GL003 | test_flags_destructuring_assignment() | Medium | - |
+Results: 7 failed, 29 passed.<br>
+The test cases that failed are the following:
+| BugID | Rule | Test Name | Priority | Description | Resolved |
+|---|---|---|---|---|---|
+| 001 | GL001 | test_flags_mutable_default_args() | High | Should flag mutable default argument like `def f(x={1: 2})` | - |
+| 002 | GL001 | test_flags_keyword_only_mutable_defaults() | Medium | Should flag keyword-only defaults like `def f(*, x=[])` | - |
+| 003 | GL001 | test_flags_async_function_mutable_default() | Low | Should flag mutable default arguments in `async` functions | - |
+| 004 | GL002 | test_chained_comparison_does_not_ flag_wrong_comparator() | Medium | Should not flag as there are multiple comparators and the one the `is` applies to is a variable like `if x is y < 5` | - |
+| 005 | GL003 | test_flags_annotated_assignment() | Medium | Should flag annotated variable if name overwrites built-in syntax like `list: list = []` | - |
+| 006 | GL003 | test_flags_augmented_assignment() | Medium | Should flag variable assigned with an augmented operator with a name that overwrites built-in syntax like `list += [1, 2]` | - |
+| 007 | GL003 | test_flags_destructuring_assignment() | Medium | Should flag destructured variable assignment if name(s) overwrite built-in syntax like `list, number = [], 5` | - |
 
-- 004: Test case input error: resolved by removing an indentation.
-
-### Next Steps
+## Next Steps
 - Resolve High priority bug, then the medium priority bugs.
 - Implement visit method for `AsyncFunctionDef` to allow the linter to flag mutable default arguments in an `async` function. 
 
