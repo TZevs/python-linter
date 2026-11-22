@@ -13,7 +13,12 @@ A small Python command-line linter that checks for three common Python bugs in a
 
 ### Design Decisions
 - Use of a **Syntax tree** instead of a text search. A text search would not be able to tell the different between `list = []` in code and a `list = []` inside a string or a comment. The `ast` module provides the real structure of the code, including attributes, data types, etc.
-- 
+- Implemented the Visitor design pattern via the `ast` NodeVisitor class creating custom `visit_` methods, that run when the instance calls `.visit(tree)` calling the methods in order that the node types are found within the passed in node.
+  - The `tree` node is the Module node, all nodes within are its children, if a function is written in the code first, then the `visit_FunctionDef` method is called first. At the end of the method `self.visit_generic(node)` is called to ensure that this function's children nodes are visited via the implemented methods before moving down the module structure.
+  - Each rule has its own `visit_` method which aligns with the Visitor pattern, this independence will allow future rules to be easily appended.
+- This program will run as a script as the file to be run is passed in via the 2nd command-line argument.
+- A `Main()` function implemented so that the file argument can be verified before calling the `lint(source)` function to parse the file content as a `ast`, create a Linter instance, and have it call the `visit(tree)` method.
+  - This is where the `ast` module comes in, because it cannot find a defined `visit` method it will automatically look for custom methods that are prefixed with `visit_` and use the suffix to match to node types. Such as `FunctionDef` in the first method. 
 
 ### Tech Stack
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
