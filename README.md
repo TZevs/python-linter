@@ -86,17 +86,18 @@ Results: 7 failed, 29 passed.<br>
 The test cases that failed are the following:
 | BugID | Rule | Test Name | Priority | Description | Resolved |
 |---|---|---|---|---|---|
-| 001 | GL001 | test_flags_mutable_default_args() | High | Should flag mutable default argument like `def f(x={1: 2})` | - |
-| 002 | GL001 | test_flags_keyword_only_mutable_defaults() | Medium | Should flag keyword-only defaults like `def f(*, x=[])` | - |
-| 003 | GL001 | test_flags_async_function_mutable_default() | Low | Should flag mutable default arguments in `async` functions | - |
-| 004 | GL002 | test_chained_comparison_does_not_ flag_wrong_comparator() | Medium | Should not flag as there are multiple comparators and the one the `is` applies to is a variable like `if x is y < 5` | - |
-| 005 | GL003 | test_flags_annotated_assignment() | Medium | Should flag annotated variable if name overwrites built-in syntax like `list: list = []` | - |
-| 006 | GL003 | test_flags_augmented_assignment() | Medium | Should flag variable assigned with an augmented operator with a name that overwrites built-in syntax like `list += [1, 2]` | - |
-| 007 | GL003 | test_flags_destructuring_assignment() | Medium | Should flag destructured variable assignment if name(s) overwrite built-in syntax like `list, number = [], 5` | - |
+| 001 | GL001 | test_flags_mutable_ default_args() | High | Should flag mutable default argument like `def f(x={1: 2})` | - |
+| 002 | GL001 | test_flags_keyword_ only_mutable_defaults() | Medium | Should flag keyword-only defaults like `def f(*, x=[])` | - |
+| 003 | GL001 | test_flags_async_ function_mutable_default() | Low | Should flag mutable default arguments in `async` functions | - |
+| 004 | GL002 | test_chained_ comparison_does_not_ flag_wrong_comparator() | Medium | Should not flag as there are multiple comparators and the one the `is` applies to is a variable like `if x is y < 5` | - |
+| 005 | GL003 | test_flags_ annotated_assignment() | Medium | Should flag annotated variable if name overwrites built-in syntax like `list: list = []` | - |
+| 006 | GL003 | test_flags_ augmented_assignment() | Medium | Should flag variable assigned with an augmented operator with a name that overwrites built-in syntax like `list += [1, 2]` | - |
+| 007 | GL003 | test_flags_ destructuring_assignment() | Medium | Should flag destructured variable assignment if name(s) overwrite built-in syntax like `list, number = [], 5` | - |
 
 ## Next Steps
 - Resolve High priority bug, then the medium priority bugs.
-- Implement visit method for `AsyncFunctionDef` to allow the linter to flag mutable default arguments in an `async` function. 
+- Implement visit method for `AsyncFunctionDef` to allow the linter to flag mutable default arguments in an `async` function.
+  - Consider this a new rule, as it will require a new method. 
 
 ## References
 [Python Docs: ast - Abstract syntax trees](https://docs.python.org/3/library/ast.html#node-classes)<br>
