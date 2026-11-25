@@ -12,8 +12,11 @@ _Learning plan created by Claude, **the code solution was not**, other than a fe
 ```python
 (venv) python-linter % python3 python_linter/linter.py examples/bad_example_2.py
 ```
-<img width="768" height="58" alt="Screenshot 2026-11-22 at 19 32 16 copy" src="https://github.com/user-attachments/assets/c88e7e7d-0721-4031-beb4-60fd8ce41d7f" />
-<img width="286" height="238" alt="Screenshot 2026-11-22 at 19 32 35" src="https://github.com/user-attachments/assets/200508bc-b6ad-475f-a3c8-a0103a863b3e" />
+The Output: <br>
+<img width="768" height="58" alt="Screenshot 2026-11-22 at 19 32 16 copy" src="https://github.com/user-attachments/assets/c88e7e7d-0721-4031-beb4-60fd8ce41d7f" /><br>
+
+The Code:<br>
+<img width="286" height="238" alt="Screenshot 2026-11-22 at 19 32 35" src="https://github.com/user-attachments/assets/200508bc-b6ad-475f-a3c8-a0103a863b3e" /><br>
 
 ### Rules
 | Code | Finds | Example |
